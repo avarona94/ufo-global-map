@@ -1,0 +1,13 @@
+# Configuración local con credenciales
+config.php
+
+# Subidas de usuarios (no se suben al repo)
+uploads/*
+!uploads/.gitkeep
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
