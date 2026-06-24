@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="bodyMetal" cx="45%" cy="30%" r="70%">
+      <stop offset="0%"   stop-color="#f0f2f4"/>
+      <stop offset="35%"  stop-color="#c0c4cc"/>
+      <stop offset="70%"  stop-color="#80848e"/>
+      <stop offset="100%" stop-color="#444850"/>
+    </radialGradient>
+    <radialGradient id="domeMetal" cx="40%" cy="30%" r="68%">
+      <stop offset="0%"   stop-color="#d8dadc"/>
+      <stop offset="50%"  stop-color="#909298"/>
+      <stop offset="100%" stop-color="#484a50"/>
+    </radialGradient>
+    <linearGradient id="underBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#70747e"/>
+      <stop offset="100%" stop-color="#2e3038"/>
+    </linearGradient>
+  </defs>
+  <!-- Sombra -->
+  <ellipse cx="32" cy="43" rx="21" ry="3" fill="#000000" opacity="0.3"/>
+  <!-- Cara inferior del disco -->
+  <ellipse cx="32" cy="38.5" rx="22" ry="5.5" fill="url(#underBody)"/>
+  <!-- Cuerpo principal -->
+  <ellipse cx="32" cy="36" rx="22" ry="7" fill="url(#bodyMetal)"/>
+  <ellipse cx="32" cy="36" rx="22" ry="7" fill="none" stroke="#b0b4bc" stroke-width="0.7"/>
+  <!-- Reflejo metálico superior -->
+  <ellipse cx="26" cy="32.5" rx="9" ry="2" fill="#ffffff" opacity="0.22" transform="rotate(-5,26,32.5)"/>
+  <!-- Cúpula toda metálica -->
+  <ellipse cx="32" cy="30" rx="10.5" ry="5.5" fill="url(#domeMetal)"/>
+  <ellipse cx="32" cy="30" rx="10.5" ry="5.5" fill="none" stroke="#a0a4aa" stroke-width="0.7"/>
+  <!-- Brillo cúpula -->
+  <ellipse cx="28.5" cy="28" rx="3.5" ry="1.5" fill="#ffffff" opacity="0.35" transform="rotate(-15,28.5,28)"/>
+  <!-- Línea de unión disco-cúpula -->
+  <ellipse cx="32" cy="34" rx="22" ry="2.5" fill="#606468" opacity="0.5"/>
+</svg>

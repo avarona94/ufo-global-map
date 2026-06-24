@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFO Global Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="contenedor">
+
+    <!-- ── Panel lateral izquierdo ── -->
+    <div id="panel">
+      <h1>🛸 Avistamientos OVNI</h1>
+
+      <select id="filtro-pais">
+        <option value="">🌍 Todos los países</option>
+      </select>
+
+      <select id="filtro-año">
+        <option value="">📅 Todos los años</option>
+      </select>
+
+      <!-- Select nativo OCULTO — app.js lo sigue leyendo sin cambios -->
+      <select id="filtro-tipo" style="display:none">
+        <option value="">Todos los tipos</option>
+      </select>
+
+      <!-- Dropdown custom con SVG reales, mismo estilo que el buscador -->
+      <div id="tipo-custom">
+        <div id="tipo-selected">
+          <span id="tipo-sel-icono">🔍</span>
+          <span id="tipo-sel-label">Todos los tipos</span>
+          <span id="tipo-sel-count"></span>
+          <span id="tipo-arrow">▾</span>
+        </div>
+        <div id="tipo-dropdown">
+          <div class="tipo-opt selected" data-value="">
+            <span class="tipo-opt-ico">🔍</span>
+            <span class="tipo-opt-txt">Todos los tipos</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+          <div class="tipo-opt" data-value="platillo">
+            <img src="img/platillo.svg"  class="tipo-opt-svg" alt="platillo">
+            <span class="tipo-opt-txt">Platillo</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+          <div class="tipo-opt" data-value="orbe">
+            <img src="img/orbe.svg"      class="tipo-opt-svg" alt="orbe">
+            <span class="tipo-opt-txt">Orbe</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+          <div class="tipo-opt" data-value="triangulo">
+            <img src="img/triangulo.svg" class="tipo-opt-svg" alt="triángulo">
+            <span class="tipo-opt-txt">Triángulo</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+          <div class="tipo-opt" data-value="cigarro">
+            <img src="img/cigarro.svg"   class="tipo-opt-svg" alt="cigarro">
+            <span class="tipo-opt-txt">Cigarro</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+          <div class="tipo-opt" data-value="luces">
+            <img src="img/luces.svg"     class="tipo-opt-svg" alt="luces">
+            <span class="tipo-opt-txt">Luces</span>
+            <span class="tipo-opt-cnt"></span>
+          </div>
+        </div>
+      </div>
+
+      <ul id="lista"></ul>
+    </div>
+
+    <!-- ── Mapa ── -->
+    <div id="map">
+
+      <!-- Leyenda flotante con SVG reales -->
+      <div id="leyenda">
+        <div class="leyenda-titulo">Tipos de avistamiento</div>
+        <div class="leyenda-item">
+          <img src="img/platillo.svg"  class="leyenda-svg" alt="platillo"> Platillo
+        </div>
+        <div class="leyenda-item">
+          <img src="img/orbe.svg"      class="leyenda-svg" alt="orbe"> Orbe
+        </div>
+        <div class="leyenda-item">
+          <img src="img/triangulo.svg" class="leyenda-svg" alt="triángulo"> Triángulo
+        </div>
+        <div class="leyenda-item">
+          <img src="img/cigarro.svg"   class="leyenda-svg" alt="cigarro"> Cigarro
+        </div>
+        <div class="leyenda-item">
+          <img src="img/luces.svg"     class="leyenda-svg" alt="luces"> Luces
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Modal de detalle ── -->
+  <div id="modal-fondo">
+    <div id="modal">
+      <button id="modal-cerrar">✕</button>
+      <h2 id="modal-titulo"></h2>
+      <p id="modal-año-pais"></p>
+      <div id="galeria">
+        <button id="galeria-prev">&#8592;</button>
+        <img id="modal-imagen" src="" alt="Imagen del avistamiento" />
+        <button id="galeria-next">&#8594;</button>
+      </div>
+      <p id="galeria-contador"></p>
+      <p id="modal-descripcion"></p>
+      <div id="modal-video"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+  /* ── Dropdown custom de tipos ─────────────────────────────────────────────
+     El <select id="filtro-tipo"> está oculto pero sigue activo en el DOM.
+     Este script maneja la UI visual y dispara los mismos eventos que antes.
+  ── */
+  (function () {
+    const wrap     = document.getElementById('tipo-custom');
+    const selEl    = document.getElementById('filtro-tipo');
+    const selIco   = document.getElementById('tipo-sel-icono');
+    const selLbl   = document.getElementById('tipo-sel-label');
+    const selCnt   = document.getElementById('tipo-sel-count');
+    const dropdown = document.getElementById('tipo-dropdown');
+
+    const TIPO_COLOR = {
+      platillo:  '#39ff14',
+      orbe:      '#00cfff',
+      triangulo: '#ff6600',
+      cigarro:   '#ff2266',
+      luces:     '#ffe600'
+    };
+
+    /* Abrir / cerrar */
+    document.getElementById('tipo-selected').addEventListener('click', e => {
+      e.stopPropagation();
+      wrap.classList.toggle('abierto');
+    });
+    document.addEventListener('click', () => wrap.classList.remove('abierto'));
+
+    /* Seleccionar opción */
+    dropdown.querySelectorAll('.tipo-opt').forEach(opt => {
+      opt.addEventListener('click', e => {
+        e.stopPropagation();
+        const val = opt.dataset.value;
+
+        dropdown.querySelectorAll('.tipo-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+
+        if (val === '') {
+          selIco.innerHTML = '🔍';
+          selLbl.textContent = 'Todos los tipos';
+          selLbl.style.color = '';
+          selCnt.textContent = '';
+        } else {
+          selIco.innerHTML = `<img src="img/${val}.svg" class="tipo-sel-img">`;
+          selLbl.textContent = opt.querySelector('.tipo-opt-txt').textContent;
+          selLbl.style.color = TIPO_COLOR[val] || '#fff';
+        }
+
+        selEl.value = val;
+        selEl.dispatchEvent(new Event('change'));
+        wrap.classList.remove('abierto');
+      });
+    });
+
+    /* Sincronizar contadores: observa cambios en el select oculto */
+    const observer = new MutationObserver(() => {
+      Array.from(selEl.options).forEach(opt => {
+        const val = opt.value;
+        const match = opt.textContent.match(/\((\d+)\)/);
+        if (!match) return;
+        const n = match[1];
+        if (val === '') {
+          const el = dropdown.querySelector('.tipo-opt[data-value=""] .tipo-opt-cnt');
+          if (el) el.textContent = `(${n})`;
+          if (!selEl.value) selCnt.textContent = `(${n})`;
+        } else {
+          const el = dropdown.querySelector(`.tipo-opt[data-value="${val}"] .tipo-opt-cnt`);
+          if (el) el.textContent = `(${n})`;
+          if (selEl.value === val) selCnt.textContent = `(${n})`;
+        }
+      });
+    });
+    observer.observe(selEl, { subtree: true, characterData: true, childList: true });
+  })();
+  </script>
+
+  <script src="welcome.js"></script>
+  <script src="timeline.js"></script>
+  <script src="buscador.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#e0e2e6"/>
+      <stop offset="40%"  stop-color="#b0b4bc"/>
+      <stop offset="100%" stop-color="#505460"/>
+    </linearGradient>
+    <linearGradient id="topShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Sombra -->
+  <ellipse cx="32" cy="44" rx="23" ry="2.5" fill="#000000" opacity="0.28"/>
+  <!-- Forma de cápsula: path que dibuja rectángulo con semicírculos en ambos extremos -->
+  <path d="M18,26 Q6,26 6,33.5 Q6,41 18,41 L46,41 Q58,41 58,33.5 Q58,26 46,26 Z"
+        fill="url(#capGrad)" stroke="#b0b4bc" stroke-width="0.8"/>
+  <!-- Brillo superior sobre toda la cápsula -->
+  <path d="M18,26 Q6,26 6,33.5 L6,30 Q6,26 18,26 Z" fill="#ffffff" opacity="0.15"/>
+  <path d="M18,26 L46,26 Q58,26 58,30 L58,33.5 Q58,26 46,26 Z" fill="#ffffff" opacity="0.15"/>
+  <rect x="18" y="26" width="28" height="7" fill="url(#topShine)"/>
+  <!-- Líneas de paneles -->
+  <line x1="24" y1="27" x2="24" y2="40" stroke="#aaaaaa" stroke-width="0.5" opacity="0.3"/>
+  <line x1="32" y1="26.5" x2="32" y2="40.5" stroke="#aaaaaa" stroke-width="0.5" opacity="0.3"/>
+  <line x1="40" y1="27" x2="40" y2="40" stroke="#aaaaaa" stroke-width="0.5" opacity="0.3"/>
+  <!-- Reflejo largo -->
+  <rect x="18" y="28" width="28" height="2" rx="1" fill="#ffffff" opacity="0.18"/>
+</svg>
